@@ -5,7 +5,7 @@
  * Tests if your MongoDB connection string is configured correctly
  * Usage: node test-connection.js
  */
-
+// test comment
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { readFileSync, existsSync } from 'fs';
