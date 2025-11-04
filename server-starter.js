@@ -22,7 +22,7 @@ import cors from "cors";
 
 // TODO: Create Express application
 // Hint: Use express()
-const app = // YOUR CODE HERE
+const app; // YOUR CODE HERE
 
 // TODO: Add CORS middleware (allows test.html to work)
 // Hint: Use app.use(cors())
@@ -48,11 +48,23 @@ const app = // YOUR CODE HERE
 // - username: type String, required: true, unique: true
 // - password: type String, required: true
 // Hint: Use new mongoose.Schema({ ... })
-const userSchema = // YOUR CODE HERE
+// YOUR CODE HERE
+const userSchema = new Schema({
+    username: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    password: {
+      type: String,
+      required: true,
+    }
+});
 
 // TODO: Create a User model from the schema
 // Hint: Use mongoose.model("User", userSchema)
-const User = // YOUR CODE HERE
+// YOUR CODE HERE
+const User = mongoose.model("User", userSchema);
 
 // ============================================================================
 // STEP 3: SIGNUP ROUTE - Create New User
@@ -63,37 +75,50 @@ app.post("/signup", async (req, res) => {
   try {
     // TODO: Extract username and password from req.body
     // Hint: Use destructuring: const { username, password } = req.body
-    const { username, password } = // YOUR CODE HERE
+    // YOUR CODE HERE
+    const { username, password } = req.body;
 
     // TODO: Validate that username and password are provided
     // If not, return status 400 with error: { error: "Username and password are required" }
     // Hint: Use if (!username || !password) { return res.status(400).json(...) }
     // YOUR CODE HERE
+    if (!username || !password) {
+      return res.status(400).json({error: "Username and password are required"});
+    }
 
     // TODO: Check if user already exists in database
     // Hint: Use User.findOne({ username })
-    const existing = // YOUR CODE HERE
+    // YOUR CODE HERE
+    const existing = User.findOne({username});
+    
 
     // TODO: If user exists, return status 400 with error: { error: "User already exists" }
     // YOUR CODE HERE
+    if (existing) {
+      return res.status(400).json({error: "User already exists"});
+    }
 
     // TODO: Hash the password using bcrypt
     // - Use bcrypt.hash(password, 10)
     // - Store result in a variable called 'hashed'
     // - 10 is the number of salt rounds (good balance of security vs speed)
-    const hashed = // YOUR CODE HERE
+    // YOUR CODE HERE
+    const hashed = bcrypt.hash(password, 10);
 
     // TODO: Create a new User object with username and hashed password
     // Hint: new User({ username, password: hashed })
-    const user = // YOUR CODE HERE
+    // YOUR CODE HERE
+    const user = new User({username, password: hashed});
 
     // TODO: Save the user to the database
     // Hint: Use await user.save()
     // YOUR CODE HERE
+    await user.save();
 
     // TODO: Return status 201 with success message: { message: "User created successfully" }
     // Hint: Use res.status(201).json({ ... })
     // YOUR CODE HERE
+    return res.status(201).json({message: "User created successfully"});
 
   } catch (error) {
     // Error handling is provided for you
