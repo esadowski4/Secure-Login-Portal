@@ -49,7 +49,7 @@ const app; // YOUR CODE HERE
 // - password: type String, required: true
 // Hint: Use new mongoose.Schema({ ... })
 // YOUR CODE HERE
-const userSchema = new Schema({
+const userSchema = new mongoose.Schema({
     username: {
       type: String,
       required: true,
