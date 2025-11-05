@@ -19,19 +19,19 @@ import cors from "cors";
 // TODO: Load environment variables from .env file
 // Hint: Use dotenv.config()
 // YOUR CODE HERE
-
+dotenv.config();
 // TODO: Create Express application
 // Hint: Use express()
-const app; // YOUR CODE HERE
+const app = express(); // YOUR CODE HERE
 
 // TODO: Add CORS middleware (allows test.html to work)
 // Hint: Use app.use(cors())
 // YOUR CODE HERE
-
+app.use(cors());
 // TODO: Add middleware to parse JSON request bodies
 // Hint: Use app.use(express.json())
 // YOUR CODE HERE
-
+app.use(express.json());
 // ============================================================================
 // STEP 1: Connect to MongoDB Database
 // ============================================================================
@@ -40,6 +40,13 @@ const app; // YOUR CODE HERE
 // - Use .then() to log success message: "✅ Connected to MongoDB"
 // - Use .catch() to log error message
 // YOUR CODE HERE
+mongoose.connect(process.env.MONGO_URI)
+.then(() => {
+  console.log("✅ Connected to MongoDB");
+})
+.catch((error) => {
+  console.error("✖️ Failed to connect to MongoDB:", error);
+});
 
 // ============================================================================
 // STEP 2: Define User Schema (Database Structure)
@@ -77,7 +84,7 @@ app.post("/signup", async (req, res) => {
     // Hint: Use destructuring: const { username, password } = req.body
     // YOUR CODE HERE
     const { username, password } = req.body;
-
+    
     // TODO: Validate that username and password are provided
     // If not, return status 400 with error: { error: "Username and password are required" }
     // Hint: Use if (!username || !password) { return res.status(400).json(...) }
