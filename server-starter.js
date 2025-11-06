@@ -96,7 +96,7 @@ app.post("/signup", async (req, res) => {
     // TODO: Check if user already exists in database
     // Hint: Use User.findOne({ username })
     // YOUR CODE HERE
-    const existing = User.findOne({username});
+    const existing = await User.findOne({username});
     
 
     // TODO: If user exists, return status 400 with error: { error: "User already exists" }
@@ -110,7 +110,7 @@ app.post("/signup", async (req, res) => {
     // - Store result in a variable called 'hashed'
     // - 10 is the number of salt rounds (good balance of security vs speed)
     // YOUR CODE HERE
-    const hashed = bcrypt.hash(password, 10);
+    const hashed = await bcrypt.hash(password, 10);
 
     // TODO: Create a new User object with username and hashed password
     // Hint: new User({ username, password: hashed })
@@ -142,31 +142,38 @@ app.post("/signup", async (req, res) => {
 app.post("/login", async (req, res) => {
   try {
     // TODO: Extract username and password from req.body
-    const { username, password } = // YOUR CODE HERE
+    const { username, password } = req.body; // YOUR CODE HERE
 
     // TODO: Validate that username and password are provided
     // If not, return status 400 with error: { error: "Username and password are required" }
     // YOUR CODE HERE
-
+    if (!username || !password) {
+      return res.status(400).json({ error: "Username and password are required"});
+    }
     // TODO: Find user in database by username
     // Hint: Use User.findOne({ username })
-    const user = // YOUR CODE HERE
+    const user = await User.findOne({username}); // YOUR CODE HERE
 
     // TODO: If user is not found, return status 400 with error: { error: "User not found" }
     // YOUR CODE HERE
-
+    if (!user) {
+      return res.status(400).json({ error: "User not found"});
+    }
     // TODO: Compare provided password with hashed password in database
     // - Use bcrypt.compare(password, user.password)
     // - Store result in a variable called 'valid'
     // - This returns true if passwords match, false otherwise
-    const valid = // YOUR CODE HERE
+    const valid = await bcrypt.compare(password, user.password); // YOUR CODE HERE
 
     // TODO: If passwords don't match, return status 401 with error: { error: "Invalid password" }
     // YOUR CODE HERE
-
+    if(!valid) {
+      return res.status(401).json({error: "Invalid password"});
+    }
     // TODO: If everything is valid, return success message: { message: "Login successful!" }
     // Hint: Use res.json({ ... })
     // YOUR CODE HERE
+    return res.json({message: "Login successful!"});
 
   } catch (error) {
     // Error handling is provided for you
@@ -180,13 +187,16 @@ app.post("/login", async (req, res) => {
 // ============================================================================
 // TODO: Get port from environment variable or use 3000 as default
 // Hint: Use process.env.PORT || 3000
-const PORT = // YOUR CODE HERE
+const PORT = process.env.PORT || 3000; // YOUR CODE HERE
 
 // TODO: Start the server using app.listen()
 // - First argument: PORT
 // - Second argument: callback function that logs:
 //   "🚀 Server running on http://localhost:{PORT}"
 // YOUR CODE HERE
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+});
 
 // ============================================================================
 // TESTING YOUR CODE
