@@ -213,18 +213,19 @@ app.listen(PORT, () => {
 // SECURITY QUIZ (Answer these to check your understanding)
 // ============================================================================
 // Q1: Why do we hash passwords instead of storing them in plain text?
-// A: _______________________________________________________________
+// A: For security purposes; Hashing it is a one-way storage system and can't be hacked by decryption or any other method
 
 // Q2: Can you reverse a bcrypt hash to get the original password?
-// A: _______________________________________________________________
+// A: No, you can't. If it was an encryption, you could though.
 
 // Q3: What does the number 10 in bcrypt.hash(password, 10) mean?
-// A: _______________________________________________________________
+// A: It is the number of salt rounds we are using, which is the number of iterations the the hashing algorithm preforms
 
 // Q4: Why do we use bcrypt.compare() instead of comparing strings directly?
-// A: _______________________________________________________________
+// A: For security purposes, we compare the hash values of the two strings so hackers can't be able to see the plain text passwords
 
 // Q5: What happens if two users have the same password?
-// A: _______________________________________________________________
+// A: Then they will have the hash value for their passwords. This isn't a security risk whatsoever. We will NOT however tell the user
+// that user "bob123" has the same password as you
 // ============================================================================
 
